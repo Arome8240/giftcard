@@ -56,7 +56,9 @@ contract GiftCard{
         cardLength++;
     }
 
+
     function buyCard(uint _index)public payable{
+        require(msg.sender != cards[_index].owner, "Cannot be owner");
         require(
                 IERC20Token(cUsdTokenAddress).transferFrom(
                     msg.sender,
@@ -69,6 +71,7 @@ contract GiftCard{
     }
 
     function giftCard(uint _index, address _address)public payable{
+        require(msg.sender == cards[_index].owner, "must be be owner");
         cards[_index].owner = payable(_address);
     }
 

@@ -104,20 +104,26 @@ export default function App() {
       await contract.methods
         .createCard(number, description, image, price)
         .send({ from: address });
+      getBalance()
+      getCards()
     } catch (error) {
       console.log(error);
     }
   };
 
   const buyCard = async (_index) => {
-    const amount = cards[_index].amount / ( 10 ** 18);
+    const amount = cards[_index].amount / 10 ** 18;
     console.log(amount);
-    const price = new BigNumber(amount * 3).shiftedBy(ERC20_DECIMALS).toString();
+    const price = new BigNumber(amount * 3)
+      .shiftedBy(ERC20_DECIMALS)
+      .toString();
     try {
       await cUSDContract.methods
         .approve(contractAddress, price)
         .send({ from: address });
       await contract.methods.buyCard(_index).send({ from: address });
+      getBalance()
+      getCards()
     } catch (error) {
       console.log(error);
     }
@@ -129,6 +135,7 @@ export default function App() {
       await contract.methods
         .giftCard(_index, giftAddress)
         .send({ from: address });
+      getCards()
     } catch (error) {
       console.log(error);
     }
@@ -185,7 +192,7 @@ export default function App() {
             <div class="block">
               <div class="ml-4 flex items-center md:ml-6">
                 <a
-                  href="https://github.com/"
+                  href="https://github.com/Arome8240/giftcard"
                   class="p-1 rounded-full text-gray-400 focus:outline-none hover:text-gray-200 focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
                 >
                   <span class="sr-only">View github</span>
@@ -289,15 +296,17 @@ export default function App() {
                 ${card.amount / 10 ** 18}
               </p>
 
-              {card.owner === address && <div class="my-3 relative ">
-                <input
-                  onChange={(e) => setGiftAddress(e.target.value)}
-                  type="text"
-                  id="rounded-email"
-                  class=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
-                  placeholder="Gift Address"
-                />
-              </div>}
+              {card.owner === address && (
+                <div class="my-3 relative ">
+                  <input
+                    onChange={(e) => setGiftAddress(e.target.value)}
+                    type="text"
+                    id="rounded-email"
+                    class=" rounded-lg border-transparent flex-1 appearance-none border border-gray-300 w-full py-2 px-4 bg-white text-gray-700 placeholder-gray-400 shadow-sm text-base focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+                    placeholder="Gift Address"
+                  />
+                </div>
+              )}
 
               <div class="flex items-center">
                 {address !== card.owner ? (
@@ -317,13 +326,15 @@ export default function App() {
                     Buy
                   </button>
                 )}
-                {address === card.owner && <button
-                  type="button"
-                  onClick={() => giftCard(card.index)}
-                  class="bg-blue-500 border-t border-b border-r text-base font-medium rounded-r-md text-white hover:bg-blue-600 px-4 py-2"
-                >
-                  Gift
-                </button>}
+                {address === card.owner && (
+                  <button
+                    type="button"
+                    onClick={() => giftCard(card.index)}
+                    class="bg-blue-500 border-t border-b border-r text-base font-medium rounded-r-md text-white hover:bg-blue-600 px-4 py-2"
+                  >
+                    Gift
+                  </button>
+                )}
               </div>
             </div>
           </div>
